@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+func canAttachMoleculeToStatus(status string) bool {
+	return status == StatusPinned || status == StatusHooked
+}
+
 // StatusPinned is the status for pinned beads that never get closed.
 // These are "domain table" beads like role definitions that persist permanently.
 const StatusPinned = "pinned"
@@ -148,7 +152,7 @@ func (b *Beads) ClearMail(reason string) (*ClearMailResult, error) {
 	return result, nil
 }
 
-// AttachMolecule attaches a molecule to a pinned bead by updating its description.
+// AttachMolecule attaches a molecule to a pinned or hooked bead by updating its description.
 // The moleculeID is the root issue ID of the molecule to attach.
 // Returns the updated issue.
 func (b *Beads) AttachMolecule(pinnedBeadID, moleculeID string) (*Issue, error) {
@@ -158,8 +162,11 @@ func (b *Beads) AttachMolecule(pinnedBeadID, moleculeID string) (*Issue, error) 
 		return nil, fmt.Errorf("fetching pinned bead: %w", err)
 	}
 
-	if issue.Status != StatusPinned {
-		return nil, fmt.Errorf("issue %s is not pinned (status: %s)", pinnedBeadID, issue.Status)
+	// Historically we only allowed attachment to "pinned" beads (handoff beads).
+	// Patrol wisps and other agent work is typically "hooked", and needs a molecule
+	// attachment to execute. Allow both.
+	if !canAttachMoleculeToStatus(issue.Status) {
+		return nil, fmt.Errorf("issue %s is not pinned or hooked (status: %s)", pinnedBeadID, issue.Status)
 	}
 
 	// Build attachment fields with current timestamp
