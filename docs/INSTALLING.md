@@ -10,7 +10,6 @@ Complete setup guide for Gas Town multi-agent orchestrator.
 |------|---------|-------|---------|
 | **Go** | 1.24+ | `go version` | See [golang.org](https://go.dev/doc/install) |
 | **Git** | 2.20+ | `git --version` | See below |
-| **Beads** | latest | `bd version` | `go install github.com/steveyegge/beads/cmd/bd@latest` |
 
 ### Optional (for Full Stack Mode)
 
@@ -80,12 +79,8 @@ tmux -V           # (Optional) Should show 3.0 or higher
 # Install Gas Town CLI
 go install github.com/steveyegge/gastown/cmd/gt@latest
 
-# Install Beads (issue tracker)
-go install github.com/steveyegge/beads/cmd/bd@latest
-
 # Verify installation
 gt version
-bd version
 ```
 
 If `gt` is not found, ensure `$GOPATH/bin` (usually `~/go/bin`) is in your PATH:
@@ -106,7 +101,6 @@ gt install ~/gt
 #   ├── CLAUDE.md          # Mayor role context
 #   ├── mayor/             # Mayor config and state
 #   ├── rigs/              # Project containers (initially empty)
-#   └── .beads/            # Town-level issue tracking
 ```
 
 ### Step 3: Add a Project (Rig)
@@ -117,7 +111,6 @@ gt rig add myproject https://github.com/you/repo.git
 
 # This clones the repo and sets up:
 #   ~/gt/myproject/
-#   ├── .beads/            # Project issue tracking
 #   ├── mayor/rig/         # Mayor's clone (canonical)
 #   ├── refinery/rig/      # Merge queue processor
 #   ├── witness/           # Worker monitor
@@ -225,13 +218,9 @@ export PATH="$PATH:$HOME/go/bin"
 source ~/.bashrc  # or restart terminal
 ```
 
-### `bd: command not found`
+### Retired issue-tracker commands
 
-Beads CLI not installed:
-
-```bash
-go install github.com/steveyegge/beads/cmd/bd@latest
-```
+The historical Beads/bd backend is not part of the supported local setup. Do not install or run old `bd` command examples.
 
 ### `gt doctor` shows errors
 
@@ -268,31 +257,24 @@ ssh -T git@github.com
 git config --global credential.helper cache
 ```
 
-### Beads sync issues
+### Retired issue-tracker synchronization
 
-If beads aren't syncing across clones:
-
-```bash
-cd ~/gt/myproject/mayor/rig
-bd sync --status           # Check sync status
-bd doctor                  # Run beads health check
-```
+Historical Beads synchronization commands are unsupported. Do not run old `bd sync` or `bd doctor` examples.
 
 ## Updating
 
-To update Gas Town and Beads:
+To update Gas Town:
 
 ```bash
 go install github.com/steveyegge/gastown/cmd/gt@latest
-go install github.com/steveyegge/beads/cmd/bd@latest
 gt doctor --fix            # Fix any post-update issues
 ```
 
 ## Uninstalling
 
 ```bash
-# Remove binaries
-rm $(which gt) $(which bd)
+# Remove the Gas Town binary
+rm "$(which gt)"
 
 # Remove workspace (CAUTION: deletes all work)
 rm -rf ~/gt
