@@ -13,7 +13,7 @@ Gas Town is a workspace manager that lets you coordinate multiple Claude Code ag
 | Agents lose context on restart  | Work persists in git-backed hooks            |
 | Manual agent coordination       | Built-in mailboxes, identities, and handoffs |
 | 4-10 agents become chaotic      | Scale comfortably to 20-30 agents            |
-| Work state lost in agent memory | Work state stored in Beads ledger            |
+| Work state lost in agent memory | Work state stored in the orchestration ledger |
 
 ### Architecture
 
@@ -73,9 +73,9 @@ Git worktree-based persistent storage for agent work. Survives crashes and resta
 
 Work tracking units. Bundle multiple issues/tasks that get assigned to agents.
 
-### Beads Integration 📿
+### Retired Issue-Tracking Integration
 
-Git-backed issue tracking system that stores work state as structured data.
+The historical Beads/bd integration is retained in product source for compatibility but is not part of the supported local setup. Do not follow old Beads command examples.
 
 > **New to Gas Town?** See the [Glossary](docs/glossary.md) for a complete guide to terminology and concepts.
 
@@ -85,7 +85,6 @@ Git-backed issue tracking system that stores work state as structured data.
 
 - **Go 1.23+** - [go.dev/dl](https://go.dev/dl/)
 - **Git 2.25+** - for worktree support
-- **beads (bd) 0.44.0+** - [github.com/steveyegge/beads](https://github.com/steveyegge/beads) (required for custom type support)
 - **tmux 3.0+** - recommended for full experience
 - **Claude Code CLI** (default runtime) - [claude.ai/code](https://claude.ai/code)
 - **Codex CLI** (optional runtime) - [developers.openai.com/codex/cli](https://developers.openai.com/codex/cli)
@@ -195,65 +194,9 @@ claude --resume                        # Agent reads mail, runs work (Claude)
 gt convoy list                         # Check progress
 ```
 
-### Beads Formula Workflow
+### Retired Formula Workflow
 
-**Best for:** Predefined, repeatable processes
-
-Formulas are TOML-defined workflows stored in `.beads/formulas/`.
-
-**Example Formula** (`.beads/formulas/release.formula.toml`):
-
-```toml
-description = "Standard release process"
-formula = "release"
-version = 1
-
-[vars.version]
-description = "The semantic version to release (e.g., 1.2.0)"
-required = true
-
-[[steps]]
-id = "bump-version"
-title = "Bump version"
-description = "Run ./scripts/bump-version.sh {{version}}"
-
-[[steps]]
-id = "run-tests"
-title = "Run tests"
-description = "Run make test"
-needs = ["bump-version"]
-
-[[steps]]
-id = "build"
-title = "Build"
-description = "Run make build"
-needs = ["run-tests"]
-
-[[steps]]
-id = "create-tag"
-title = "Create release tag"
-description = "Run git tag -a v{{version}} -m 'Release v{{version}}'"
-needs = ["build"]
-
-[[steps]]
-id = "publish"
-title = "Publish"
-description = "Run ./scripts/publish.sh"
-needs = ["create-tag"]
-```
-
-**Execute:**
-
-```bash
-# List available formulas
-bd formula list
-
-# Run a formula with variables
-bd cook release --var version=1.2.0
-
-# Create formula instance for tracking
-bd mol pour release --var version=1.2.0
-```
+The historical formula workflow depended on the retired Beads/bd issue tracker. It is not supported for new local setup; do not run command examples from older documentation.
 
 ### Manual Convoy Workflow
 
@@ -344,18 +287,13 @@ gt config default-agent claude-glm
 gt config show
 ```
 
-### Beads Integration
+### Retired Issue-Tracking Commands
 
-```bash
-bd formula list             # List formulas
-bd cook <formula>           # Execute formula
-bd mol pour <formula>       # Create trackable instance
-bd mol list                 # List active instances
-```
+Historical `bd` formula and molecule commands are not supported. Do not run them.
 
-## Cooking Formulas
+## Formula Workflows
 
-Gas Town includes built-in formulas for common workflows. See `.beads/formulas/` for available recipes.
+Legacy formula files are retained in source history but are not part of the supported local workflow.
 
 ## Dashboard
 
@@ -440,7 +378,7 @@ gt completion fish > ~/.config/fish/completions/gt.fish
 - **Always start with the Mayor** - It's designed to be your primary interface
 - **Use convoys for coordination** - They provide visibility across agents
 - **Leverage hooks for persistence** - Your work won't disappear
-- **Create formulas for repeated tasks** - Save time with Beads recipes
+- **Create formulas for repeated tasks** - Save time with reusable recipes
 - **Monitor the dashboard** - Get real-time visibility
 - **Let the Mayor orchestrate** - It knows how to manage agents
 
