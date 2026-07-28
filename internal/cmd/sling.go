@@ -526,7 +526,7 @@ func storeArgsInBead(beadID, args string) error {
 
 	// Parse the bead
 	var issues []beads.Issue
-	if err := json.Unmarshal(out, &issues); err != nil {
+	if err := decodeBDJSON(out, &issues); err != nil {
 		return fmt.Errorf("parsing bead: %w", err)
 	}
 	if len(issues) == 0 {
@@ -766,7 +766,7 @@ func getBeadInfo(beadID string) (*beadInfo, error) {
 	}
 	// bd show --json returns an array (issue + dependents), take first element
 	var infos []beadInfo
-	if err := json.Unmarshal(out, &infos); err != nil {
+	if err := decodeBDJSON(out, &infos); err != nil {
 		return nil, fmt.Errorf("parsing bead info: %w", err)
 	}
 	if len(infos) == 0 {

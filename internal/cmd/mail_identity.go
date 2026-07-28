@@ -18,7 +18,30 @@ import (
 // Mail ALWAYS uses town beads, regardless of sender or recipient address.
 // This ensures messages are visible to all agents in the town.
 func findMailWorkDir() (string, error) {
-	return workspace.FindFromCwdOrError()
+	workDir, err := workspace.FindFromCwdOrError()
+	if err == nil {
+		return workDir, nil
+	}
+
+	if gtRoot := strings.TrimSpace(os.Getenv("GT_ROOT")); gtRoot != "" {
+		if absRoot, absErr := filepath.Abs(gtRoot); absErr == nil {
+			gtRoot = absRoot
+		}
+		if ok, checkErr := workspace.IsWorkspace(gtRoot); checkErr == nil && ok {
+			return gtRoot, nil
+		}
+	}
+
+	if townRoot := strings.TrimSpace(os.Getenv("GT_TOWN_ROOT")); townRoot != "" {
+		if absRoot, absErr := filepath.Abs(townRoot); absErr == nil {
+			townRoot = absRoot
+		}
+		if ok, checkErr := workspace.IsWorkspace(townRoot); checkErr == nil && ok {
+			return townRoot, nil
+		}
+	}
+
+	return "", err
 }
 
 // findLocalBeadsDir finds the nearest .beads directory by walking up from CWD.

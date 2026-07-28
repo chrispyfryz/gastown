@@ -496,7 +496,7 @@ Agent overrides:
 
 ```bash
 gt mail inbox
-gt mail read <id>
+gt mail read <id>             # alias: gt mail show <id>
 gt mail send <addr> -s "Subject" -m "Body"
 gt mail send --human -s "..."    # To overseer
 ```

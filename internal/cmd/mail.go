@@ -81,7 +81,7 @@ ADDRESS FORMATS:
 COMMANDS:
   inbox     View your inbox
   send      Send a message
-  read      Read a specific message
+  read      Read a specific message (alias: show)
   mark      Mark messages read/unread`,
 }
 
